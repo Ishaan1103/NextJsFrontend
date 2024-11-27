@@ -1,17 +1,9 @@
-import Events from "@/components/Events"
+"use client";
 
-const Dashboard = () => {
+export default function DashboardPage() {
   return (
-    <div>
-        <div>
-            navbar!
-        </div>
-        <div className="flexs m-2">
-            <Events name="Leetcode"/>
-            <Events name="test2"/>
-        </div>
+    <div className="bg-black h-screen w-full m-0 p-0">
+      {/* Add any content you want here */}
     </div>
-  )
+  );
 }
-
-export default Dashboard
