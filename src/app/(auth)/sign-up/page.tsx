@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import axios from "axios"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { PasswordInput } from "@/components/ui/password-input"
 import CheckingPassword from "@/components/ui/Checking-Password"
 import { useRouter } from "next/navigation"
@@ -18,6 +18,7 @@ export default function InputForm() {
   const [passwordError, setPasswordError] = useState(false)
   const [passwordConfirmation, setPasswordConfirmation] = useState("")
   const router = useRouter()
+
 
   const validateFields = () => {
     let valid = true
@@ -50,13 +51,30 @@ export default function InputForm() {
 
   const submitToSignup = () => {
     if (validateFields()) {
-      toast({
-        title: "Created an Account",
-        description: `Thanks for Creating account`
-      })
-      setTimeout(()=>{
-        router.push('/dashboard')
-      },5000)
+      useEffect(()=>{
+        axios.post(`http://localhost:5000/api/v1/users`,{
+          email,
+          password,
+          name : username
+        })
+        .then((res)=>{
+          toast({
+            title: "Created an Account",
+            description: 'Thanks for Creating account Redirecting to login'
+          })
+          setTimeout(()=>{
+            router.push('/sign-in')
+          },5000)
+        })
+        .catch((e)=>{
+          console.log(e)
+          toast({
+            variant: "destructive",
+            title: "Warning",
+            description: `Please Check the required Fields`
+          })
+        })
+      },[])
     }
     else{
       toast({
