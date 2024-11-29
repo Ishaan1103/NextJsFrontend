@@ -24,7 +24,6 @@ export default function InputForm() {
     } else {
       setUsernameError(false)
     }
-
     if (password.length < 6) {
       setPasswordError(true)
       valid = false
@@ -41,7 +40,7 @@ export default function InputForm() {
         description: `Welcome back ${username}`
       })
       setTimeout(()=>{
-        router.push('/dashboard')
+        router.push('/dashoard')
       },5000)
     }
   }
@@ -91,7 +90,7 @@ export default function InputForm() {
             <div>
               <Button
                 onClick={submitToSignin}
-                className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-10 px-4 bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-10 px-4 bg-blue-600 text-white py-3 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
               >
                 Login
               </Button>

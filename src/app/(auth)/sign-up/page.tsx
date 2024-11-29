@@ -3,11 +3,12 @@ import { toast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
-import axios from "axios"
 import { useState } from "react"
 import { PasswordInput } from "@/components/ui/password-input"
 import CheckingPassword from "@/components/ui/Checking-Password"
 import { useRouter } from "next/navigation"
+import { BACKEND_URL } from "@/services"
+import axios, { AxiosError } from "axios"
 
 export default function InputForm() {
   const [username, setUsername] = useState("")
@@ -18,10 +19,9 @@ export default function InputForm() {
   const [passwordError, setPasswordError] = useState(false)
   const [passwordConfirmation, setPasswordConfirmation] = useState("")
   const router = useRouter()
-
+  
   const validateFields = () => {
     let valid = true
-
     if (username.length < 2) {
       setUsernameError(true)
       valid = false
@@ -48,24 +48,68 @@ export default function InputForm() {
     return valid
   }
 
-  const submitToSignup = () => {
+  const submitToSignup = async () => {
     if (validateFields()) {
-      toast({
-        title: "Created an Account",
-        description: `Thanks for Creating account`
-      })
-      setTimeout(()=>{
-        router.push('/dashboard')
-      },5000)
-    }
-    else{
+      try {
+        const response = await axios.post(`${BACKEND_URL}/api/v1/users`, {
+          name: username,
+          email,
+          password,
+        });
+  
+        toast({
+          title: "Created an Account",
+          description: `Thanks for creating an account.`,
+        });
+  
+        setTimeout(() => {
+          router.push(`/verifyEmail?email=${response.data.email}`);
+        }, 5000);
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (error.response) {
+            if (error.response.status === 409) {
+              toast({
+                variant: "destructive",
+                title: "Conflict",
+                description: `The username or email you entered already exists. Please try again with a different one.`,
+              });
+            } else if (error.response.data && error.response.data.message) {
+              toast({
+                variant: "destructive",
+                title: "Warning",
+                description: error.response.data.message,
+              });
+            } else {
+              toast({
+                variant: "destructive",
+                title: "Error",
+                description: "An unexpected error occurred.",
+              });
+            }
+          } else {
+            toast({
+              variant: "destructive",
+              title: "Network Error",
+              description: "Could not reach the server. Please check your network connection.",
+            });
+          }
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Unexpected Error",
+            description: "An unexpected error occurred while processing your request.",
+          });
+        }
+      }
+    } else {
       toast({
         variant: "destructive",
         title: "Warning",
-        description: `Please Check the required Fields`
-      })
+        description: `Please check the required fields.`,
+      });
     }
-  }
+  };
 
 
   return (
